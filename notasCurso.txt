@@ -1,0 +1,207 @@
+
+    Section 1:
+* Big O Notation
+    // Two algorithms that do the same task
+    function addUpTo1(n){
+        let total = 0;
+        for(let i = 1; i <= n; i++){
+            total+=i;
+        }
+        return total;
+    }
+    function addUpTo2(n){
+        return n * (n+1) / 2;
+    }
+    console.log(addUpTo1(10));
+    // Goes faster (measuring duration)
+    let t1 = performance.now();
+    addUpTo2(100000000);
+    let t2 = performance.now();
+    console.log('Time elapsed: ${(t2 - t1) / 1000} seconds. ')
+
+    // Lets count the number of simple operations the computer has to perform.
+
+    addUpTo2(n) -> performs 3 simple ops.
+    addUpTo1(n) -> performs n(+) + n(=) + n(i++) + 1(total = 0) + n(<) + n(=)
+                -> 5n + 2 ops.
+
+    // Official intro de Big O
+    O(f(n)) if the number of simple operations the computer has to do is
+    eventually less than a constant times f(n), as n increases,
+
+    // Space Complexity
+    How much additional memory do we need to allocate in order to run the code in our algorithm.
+    Auxiliary space.
+
+
+  Patterns
+
+  function same(arr1, arr2){
+      if(arr1.length != arr2.length) {
+          return false;
+      }
+      for(let i = 0; i < arr1.length; i++){
+          let correctIndex = arr2.indexOf(arr1[i] ** 2)
+          if(correctIndex === -1)
+              return false;
+          arr2.splice(correctIndex, 1)
+      }
+      return true;
+  }
+
+  same([1,2,3,9], [1,4,9,16])
+  // ANAGRAM
+  function validAnagram(string1, string2){
+    if(string1.length != string2.length)
+      return false;
+    // add whatever parameters you deem necessary - good luck!
+    string1 = string1.toLowerCase();
+    string2 = string2.toLowerCase();
+    let occ1 = {}
+    let occ2 = {}
+    for(let character of string1){
+        occ1[character] = (occ1[character] || 0) + 1;
+    }
+    for(let character of string2){
+        occ2[character] = (occ2[character] || 0) + 1;
+    }
+    for(let key in occ1){
+        if(occ1[key] !== occ2[key])
+          return false;
+    }
+    return true;
+
+    //Pointers technique
+    function countUniqueValues(array){
+        // add whatever parameters you deem necessary - good luck!
+        if(array.length == 1) return 1;
+        let i = 0;
+        let j = 1;
+        while(j < array.length){
+            if(array[i] === array[j]){
+                j++;
+            }
+            else{
+                i++;
+                array[i] = array[j];
+            }
+        }
+        return i +1;
+  }
+
+  //Binary Search
+  function binarySearch(arr, elem){
+    var start = 0;
+    var end = arr.length -1;
+    var middle = Math.floor((start + end)/2);
+    while(arr[middle] !== elem && start <= end){
+      if(elem < arr[middle]) end = middle -1;
+      else start = middle +1;
+      middle = Math.floor((start + end) / 2);
+    }
+    return arr[middle] === elem = middle : -1;
+  }
+
+
+    // Insertion Sort
+    function insertionSort(array){
+        for(var i = 1; i < array.length; i++){
+          var currentVal = arr[i];
+          for(var j = i - 1; j >= 0 && array[j] > currentVal; j--){
+            array[j+1] = array[j];
+          }
+          array[j+1] = currentVal;
+        }
+        return array;
+    }
+    // Merge Sort
+
+    // Function that merges two lists
+    function merge(arr1, arr2){
+        let results = []
+        let i = 0;
+        let j = 0;
+        while(i < arr1.length && j < arr2.length){
+          if(arr2[j] > arr1[i])
+            results.push(arr1[i++]);
+          else
+            results.push(arr2[j++]);
+        }
+        while(i < arr1.length){
+          results.push(arr1[i++]);
+        }
+        while(j < arr2.length){
+          results.push(arr2[j++]);
+        }
+        return results;
+    }
+
+    function mergeSort(arr){
+      if(arr.length <= 1) return arr;
+      let mid = Math.floor(arr.length / 2);
+      let left = mergeSort(arr.slice(0, mid));
+      let right = mergeSort(arr.slice(mid));
+      return merge(left, right);
+    }
+
+
+    // QuickSort
+    function pivot(arr, start = 0, end = arr.length-1){
+        const swap = (arr, idx1, idx2) =>{
+          [arr[idx1], arr[idx2]] = [arr[idx2], arr[idx1]];
+        };
+        var pivot = arr[start];
+        var swapIdx = start;
+        for(var i = start+1; i < end; i++){
+          if(pivot > arr[i]){
+            swapIdx++;
+            swap(arr, swapIdx, i);
+          }
+        }
+        swap(arr, start, swapIdx);
+        return swapIdx;
+    }
+    function quickSort(arr, left =0, right = arr.length){
+            if(left < right){
+              let pivotIndex = pivot(arr, left, right);
+              quickSort(arr, left, pivotIndex-1);
+              quickSort(arr, pivotIndex+1, right);
+            }
+            return arr;
+    }
+    let t1 = performance.now();
+    console.log(quickSort([1,6,8,5,34]));
+    let t2 = performance.now();
+    console.log("Call to doSomething took " + (t2 - t1) + " milliseconds.");
+
+    // RadixSort
+
+    function getDigit(num, i) {
+      return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
+    }
+
+    function digitCount(num) {
+      if (num === 0) return 1;
+      return Math.floor(Math.log10(Math.abs(num))) + 1;
+    }
+
+    function mostDigits(nums) {
+      let maxDigits = 0;
+      for (let i = 0; i < nums.length; i++) {
+        maxDigits = Math.max(maxDigits, digitCount(nums[i]));
+      }
+      return maxDigits;
+    }
+
+    function radixSort(nums){
+        let maxDigitCount = mostDigits(nums);
+        for(let k = 0; k < maxDigitCount; k++){
+            let digitBuckets = Array.from({length: 10}, () => []);
+            for(let i = 0; i < nums.length; i++){
+                let digit = getDigit(nums[i],k);
+                digitBuckets[digit].push(nums[i]);
+            }
+            nums = [].concat(...digitBuckets);
+        }
+        return nums;
+    }
